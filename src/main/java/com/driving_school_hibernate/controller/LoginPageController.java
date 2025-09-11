@@ -60,13 +60,17 @@ public class LoginPageController implements Initializable {
             }
         });
 
-        // Sync text between fields
+        // Sync text between password fields
         txtPassword.textProperty().addListener((obs, oldVal, newVal) -> {
             if (!chkShowPassword.isSelected()) txtVisiblePassword.setText(newVal);
         });
         txtVisiblePassword.textProperty().addListener((obs, oldVal, newVal) -> {
             if (chkShowPassword.isSelected()) txtPassword.setText(newVal);
         });
+
+        // Register button handlers programmatically
+        btnLogin.setOnAction(this::onLogin);
+        btnClear.setOnAction(this::onClear);
     }
 
     @FXML
@@ -110,6 +114,11 @@ public class LoginPageController implements Initializable {
         txtPassword.clear();
         txtVisiblePassword.clear();
         lblError.setVisible(false);
+
+        // Ensure password field visibility resets correctly
+        if (chkShowPassword.isSelected()) {
+            chkShowPassword.setSelected(false);
+        }
     }
 
     private void showError(String message) {

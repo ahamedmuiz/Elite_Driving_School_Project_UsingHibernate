@@ -1,6 +1,6 @@
 package com.driving_school_hibernate.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
 
