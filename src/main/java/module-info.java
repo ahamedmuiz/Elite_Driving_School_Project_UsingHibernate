@@ -10,6 +10,7 @@ module com.driving_school_hibernate {
     // Optional logging
     requires org.jboss.logging;
     requires javafx.graphics;
+    requires static lombok;
 
     // JavaFX exports/opens
     opens com.driving_school_hibernate to javafx.fxml;
