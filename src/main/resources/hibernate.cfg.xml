@@ -18,5 +18,13 @@
         <property name="hibernate.format_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="hibernate.current_session_context_class">thread</property>
+
+        <!-- Add annotated classes -->
+        <mapping class="com.driving_school_hibernate.dto.UserDTO"/>
+        <mapping class="com.driving_school_hibernate.entity.Student"/>
+        <mapping class="com.driving_school_hibernate.entity.Course"/>
+        <mapping class="com.driving_school_hibernate.entity.Instructor"/>
+        <mapping class="com.driving_school_hibernate.entity.Lesson"/>
+        <mapping class="com.driving_school_hibernate.entity.Payment"/>
     </session-factory>
 </hibernate-configuration>

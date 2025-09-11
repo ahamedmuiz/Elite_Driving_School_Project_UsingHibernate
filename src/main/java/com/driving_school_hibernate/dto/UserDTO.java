@@ -1,6 +1,6 @@
 package com.driving_school_hibernate.dto;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 @Entity

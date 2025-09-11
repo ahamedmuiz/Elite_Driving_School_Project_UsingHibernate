@@ -1,8 +1,7 @@
 package com.driving_school_hibernate.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;

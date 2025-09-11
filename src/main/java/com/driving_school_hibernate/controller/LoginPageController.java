@@ -9,7 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import com.driving_school_hibernate.dto.UserDTO;
-import com.driving_school_hibernate.util.HibernateUtil;
+import com.driving_school_hibernate.config.FactoryConfiguration;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.mindrot.jbcrypt.BCrypt;
@@ -62,14 +62,10 @@ public class LoginPageController implements Initializable {
 
         // Sync text between fields
         txtPassword.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (!chkShowPassword.isSelected()) {
-                txtVisiblePassword.setText(newVal);
-            }
+            if (!chkShowPassword.isSelected()) txtVisiblePassword.setText(newVal);
         });
         txtVisiblePassword.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (chkShowPassword.isSelected()) {
-                txtPassword.setText(newVal);
-            }
+            if (chkShowPassword.isSelected()) txtPassword.setText(newVal);
         });
     }
 
@@ -83,23 +79,17 @@ public class LoginPageController implements Initializable {
             return;
         }
 
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = FactoryConfiguration.getInstance().getSession()) {
             Query<UserDTO> query = session.createQuery("FROM UserDTO WHERE username = :username", UserDTO.class);
             query.setParameter("username", username);
             UserDTO user = query.uniqueResult();
 
-            if (user == null) {
+            if (user == null || !BCrypt.checkpw(password, user.getPassword())) {
                 showError("Invalid username or password.");
                 return;
             }
 
-            // Verify hashed password using BCrypt
-            if (!BCrypt.checkpw(password, user.getPassword())) {
-                showError("Invalid username or password.");
-                return;
-            }
-
-            // ✅ Successful login → Load Dashboard
+            // Successful login → Load Dashboard
             Stage stage = (Stage) btnLogin.getScene().getWindow();
             AnchorPane root = FXMLLoader.load(getClass().getResource("/view/Dashboard.fxml"));
             stage.setScene(new Scene(root));
