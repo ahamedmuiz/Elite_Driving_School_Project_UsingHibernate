@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.driving_school_hibernate.controller.InstructorPageController">
+
+    <!-- Top Title -->
+    <top>
+        <HBox alignment="CENTER_LEFT"
+              style="-fx-background-color: #2C3E50; -fx-padding: 15;">
+            <Label text="Instructor Management"
+                   style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+        </HBox>
+    </top>
+
+    <!-- Center Form + Buttons -->
+    <center>
+        <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 20;">
+
+            <!-- Instructor Form -->
+            <GridPane hgap="15" vgap="12" alignment="CENTER_LEFT">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" minWidth="120"/>
+                    <ColumnConstraints halignment="LEFT" minWidth="250"/>
+                </columnConstraints>
+
+                <Label text="Instructor ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtInstructorId" promptText="Auto-generated or enter"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="First Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtFirstName" promptText="Enter first name"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Last Name:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtLastName" promptText="Enter last name"
+                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="NIC:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtNIC" promptText="Enter NIC"
+                           GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                <Label text="Phone:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtPhone" promptText="Enter phone number"
+                           GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                <Label text="Email:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtEmail" promptText="Enter email address"
+                           GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                <Label text="Specialization:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtSpecialization" promptText="e.g. Defensive Driving, Heavy Vehicle"
+                           GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+                <Label text="Availability:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+                <ChoiceBox fx:id="choiceAvailability" GridPane.rowIndex="7" GridPane.columnIndex="1">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Available"/>
+                            <String fx:value="Not Available"/>
+                        </FXCollections>
+                    </items>
+                </ChoiceBox>
+            </GridPane>
+
+            <!-- Action Buttons -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button fx:id="btnAdd" text="Add" onAction="#handleAddInstructor"
+                        style="-fx-background-color: #1ABC9C; -fx-text-fill: white; -fx-pref-width: 100;"/>
+                <Button fx:id="btnUpdate" text="Update" onAction="#handleUpdateInstructor"
+                        style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-pref-width: 100;"/>
+                <Button fx:id="btnDelete" text="Delete" onAction="#handleDeleteInstructor"
+                        style="-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-pref-width: 100;"/>
+                <Button fx:id="btnClear" text="Clear" onAction="#handleClearForm"
+                        style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-pref-width: 100;"/>
+            </HBox>
+
+            <!-- Search Section -->
+            <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10 0 0 0;">
+                <Label text="Search by Name:"/>
+                <TextField fx:id="txtSearch" promptText="Enter name"/>
+                <Button fx:id="btnSearch" text="Search" onAction="#handleSearchInstructor"
+                        style="-fx-background-color: #F39C12; -fx-text-fill: white;"/>
+                <Button fx:id="btnViewAll" text="View All" onAction="#handleViewAllInstructors"
+                        style="-fx-background-color: #2ECC71; -fx-text-fill: white;"/>
+            </HBox>
+        </VBox>
+    </center>
+
+    <!-- Bottom Table -->
+    <bottom>
+        <VBox style="-fx-padding: 20;">
+            <TableView fx:id="tblInstructors" prefHeight="250">
+                <columns>
+                    <TableColumn fx:id="colInstructorId" text="Instructor ID" prefWidth="100"/>
+                    <TableColumn fx:id="colFirstName" text="First Name" prefWidth="120"/>
+                    <TableColumn fx:id="colLastName" text="Last Name" prefWidth="120"/>
+                    <TableColumn fx:id="colNIC" text="NIC" prefWidth="120"/>
+                    <TableColumn fx:id="colPhone" text="Phone" prefWidth="120"/>
+                    <TableColumn fx:id="colEmail" text="Email" prefWidth="150"/>
+                    <TableColumn fx:id="colSpecialization" text="Specialization" prefWidth="180"/>
+                    <TableColumn fx:id="colAvailability" text="Availability" prefWidth="120"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </bottom>
+
+</BorderPane>
