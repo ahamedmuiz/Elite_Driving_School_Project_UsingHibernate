@@ -8,7 +8,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.driving_school_hibernate.controller.DashboardPageController">
 
     <!-- Top Header -->
@@ -48,7 +49,9 @@
 
     <!-- Center Content Area -->
     <center>
-        <StackPane fx:id="mainContent" style="-fx-background-color: #ECF0F1;" />
+        <StackPane fx:id="mainContent"
+                   style="-fx-background-color: #ECF0F1;"
+                   BorderPane.alignment="CENTER" />
     </center>
 
     <!-- Bottom Footer -->

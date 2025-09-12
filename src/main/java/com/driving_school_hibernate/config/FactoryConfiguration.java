@@ -1,38 +1,52 @@
 package com.driving_school_hibernate.config;
 
-import com.driving_school_hibernate.entity.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 public class FactoryConfiguration {
     private static FactoryConfiguration factoryConfiguration;
-    private final SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     private FactoryConfiguration() {
-        Configuration configuration = new Configuration().configure();
+        Configuration configuration = new Configuration();
+        configuration.configure(); // 1 (xml) load configuration
 
-        configuration.addAnnotatedClass(Student.class);
-        configuration.addAnnotatedClass(Course.class);
-        configuration.addAnnotatedClass(Instructor.class);
-        configuration.addAnnotatedClass(Lesson.class);
-        configuration.addAnnotatedClass(Payment.class);
+        // 2 add entity classes
+//        configuration.addAnnotatedClass(Customer.class);
+//        configuration.addAnnotatedClass(Item.class);
+//        configuration.addAnnotatedClass(Order.class);
+//        configuration.addAnnotatedClass(OrderDetail.class);
 
+        // 3 create session factory
         sessionFactory = configuration.buildSessionFactory();
     }
 
     public static FactoryConfiguration getInstance() {
-        if (factoryConfiguration == null) {
-            factoryConfiguration = new FactoryConfiguration();
-        }
-        return factoryConfiguration;
+        return factoryConfiguration == null ?
+                factoryConfiguration = new FactoryConfiguration()
+                :
+                factoryConfiguration;
     }
 
     public Session getSession() {
-        return sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
+        return session;
     }
 
+    // return the same session object for the
+    // current session
+    //
+    // thread bound session
+
+    // auto close happens on transaction commit
+    // or rollback
+    //
+    // recommend for layered dao + service(bo) architecture
     public Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }
+
+    // session is not Thread safe
+    // session factory is Thread safe, immutable
 }
