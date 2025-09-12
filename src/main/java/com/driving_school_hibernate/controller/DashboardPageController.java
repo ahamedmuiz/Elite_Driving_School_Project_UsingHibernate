@@ -15,9 +15,6 @@ public class DashboardPageController {
     private Button btnDashboard;
 
     @FXML
-    private Button btnEnrollments;
-
-    @FXML
     private Button btnInstructors;
 
     @FXML
@@ -48,11 +45,6 @@ public class DashboardPageController {
 
     @FXML
     void handleDashboard(ActionEvent event) {
-
-    }
-
-    @FXML
-    void handleEnrollments(ActionEvent event) {
 
     }
 

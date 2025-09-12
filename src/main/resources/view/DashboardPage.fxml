@@ -1,91 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.driving_school_hibernate.controller.DashboardPageController">
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.driving_school_hibernate.controller.DashboardPageController">
 
     <!-- Top Header -->
     <top>
-        <HBox spacing="20" alignment="CENTER_LEFT"
-              style="-fx-background-color: #2C3E50; -fx-padding: 15;">
-            <Label text="Elite Driving School Management System"
-                   style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;" />
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #2C3E50; -fx-padding: 15;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;" text="Elite Driving School Management System" />
             <Pane HBox.hgrow="ALWAYS" />
-            <Label fx:id="lblLoggedUser"
-                   text="Welcome, Admin"
-                   style="-fx-text-fill: #ECF0F1; -fx-font-size: 14px;" />
+            <Label fx:id="lblLoggedUser" style="-fx-text-fill: #ECF0F1; -fx-font-size: 14px;" text="Welcome, Admin" />
         </HBox>
     </top>
 
     <!-- Left Navigation Panel -->
     <left>
-        <VBox spacing="14" alignment="TOP_CENTER"
-              style="-fx-background-color: #34495E; -fx-padding: 20;">
+        <VBox alignment="TOP_CENTER" spacing="14" style="-fx-background-color: #34495E; -fx-padding: 20;">
 
-            <Button fx:id="btnDashboard" text="Dashboard"
-                    onAction="#handleDashboard"
-                    style="-fx-background-color: #1ABC9C; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" />
+            <Button fx:id="btnDashboard" onAction="#handleDashboard" style="-fx-background-color: #1ABC9C; -fx-text-fill: white; -fx-font-size: 18px; -fx-pref-width: 160; -fx-font-weight: bold;" text="Profile" />
 
             <Separator />
 
-            <Button fx:id="btnStudents" text="Students"
-                    onAction="#handleStudents"
-                    style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" />
+            <Button fx:id="btnStudents" onAction="#handleStudents" style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" text="Student Registration" />
 
-            <Button fx:id="btnCourses" text="Courses"
-                    onAction="#handleCourses"
-                    style="-fx-background-color: #9B59B6; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" />
+            <Button fx:id="btnCourses" onAction="#handleCourses" style="-fx-background-color: #9B59B6; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" text="Manage Course" />
 
-            <Button fx:id="btnInstructors" text="Instructors"
-                    onAction="#handleInstructors"
-                    style="-fx-background-color: #E67E22; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" />
+            <Button fx:id="btnInstructors" onAction="#handleInstructors" style="-fx-background-color: #E67E22; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" text="Instructors" />
 
-            <Button fx:id="btnEnrollments" text="Enrollments"
-                    onAction="#handleEnrollments"
-                    style="-fx-background-color: #16A085; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" />
+            <Button fx:id="btnLessons" onAction="#handleLessons" style="-fx-background-color: #F39C12; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" text="Lessons Scheduling" />
 
-            <Button fx:id="btnLessons" text="Lessons"
-                    onAction="#handleLessons"
-                    style="-fx-background-color: #F39C12; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" />
-
-            <Button fx:id="btnPayments" text="Payments"
-                    onAction="#handlePayments"
-                    style="-fx-background-color: #C0392B; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" />
+            <Button fx:id="btnPayments" onAction="#handlePayments" style="-fx-background-color: #C0392B; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" text="Payments" />
 
             <Separator />
 
-            <Button fx:id="btnUsers" text="Users"
-                    onAction="#handleUsers"
-                    style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" />
+            <Button fx:id="btnUsers" onAction="#handleUsers" style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" text="Users" />
 
-            <Button fx:id="btnLogout" text="Logout"
-                    onAction="#handleLogout"
-                    style="-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" />
+            <Button fx:id="btnLogout" onAction="#handleLogout" style="-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-font-size: 14px; -fx-pref-width: 160;" text="Logout" />
 
         </VBox>
     </left>
 
     <!-- Center Content Area -->
     <center>
-        <StackPane fx:id="mainContent"
-                   alignment="CENTER"
-                   style="-fx-background-color: #ECF0F1;">
-            <Label text="Select an option from the left menu"
-                   style="-fx-font-size: 16px; -fx-text-fill: #7F8C8D;" />
+        <StackPane fx:id="mainContent" alignment="CENTER" style="-fx-background-color: #ECF0F1;">
+            <Label style="-fx-font-size: 16px; -fx-text-fill: #7F8C8D;" text="Select an option from the left menu" />
         </StackPane>
     </center>
 
     <!-- Bottom Footer -->
     <bottom>
-        <HBox alignment="CENTER_RIGHT"
-              style="-fx-background-color: #BDC3C7; -fx-padding: 10;">
-            <Label text="© 2025 Elite Systems | Driving School Management"
-                   style="-fx-text-fill: #2C3E50; -fx-font-size: 12px;" />
+        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #BDC3C7; -fx-padding: 10;">
+            <Label style="-fx-text-fill: #2C3E50; -fx-font-size: 12px;" text="© 2025 Elite Systems | Driving School Management" />
         </HBox>
     </bottom>
 
