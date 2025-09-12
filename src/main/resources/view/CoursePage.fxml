@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.driving_school_hibernate.controller.CoursePageController">
+
+    <!-- Top Title -->
+    <top>
+        <HBox alignment="CENTER_LEFT"
+              style="-fx-background-color: #2C3E50; -fx-padding: 15;">
+            <Label text="Course Management"
+                   style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+        </HBox>
+    </top>
+
+    <!-- Center Form + Buttons -->
+    <center>
+        <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 20;">
+
+            <!-- Course Form -->
+            <GridPane hgap="15" vgap="12" alignment="CENTER_LEFT">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" minWidth="120"/>
+                    <ColumnConstraints halignment="LEFT" minWidth="250"/>
+                </columnConstraints>
+
+                <Label text="Course ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtCourseId" promptText="Auto-generated or enter"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Course Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtCourseName" promptText="Enter course name"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Duration:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtDuration" promptText="e.g. 12 weeks / 6 months"
+                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="Fee (LKR):" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtFee" promptText="Enter course fee"
+                           GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <!-- Action Buttons -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button fx:id="btnAdd" text="Add" onAction="#handleAddCourse"
+                        style="-fx-background-color: #1ABC9C; -fx-text-fill: white; -fx-pref-width: 100;"/>
+                <Button fx:id="btnUpdate" text="Update" onAction="#handleUpdateCourse"
+                        style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-pref-width: 100;"/>
+                <Button fx:id="btnDelete" text="Delete" onAction="#handleDeleteCourse"
+                        style="-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-pref-width: 100;"/>
+                <Button fx:id="btnClear" text="Clear" onAction="#handleClearForm"
+                        style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-pref-width: 100;"/>
+            </HBox>
+
+            <!-- Search Section -->
+            <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10 0 0 0;">
+                <Label text="Search by Course Name:"/>
+                <TextField fx:id="txtSearch" promptText="Enter name"/>
+                <Button fx:id="btnSearch" text="Search" onAction="#handleSearchCourse"
+                        style="-fx-background-color: #F39C12; -fx-text-fill: white;"/>
+                <Button fx:id="btnViewAll" text="View All" onAction="#handleViewAllCourses"
+                        style="-fx-background-color: #2ECC71; -fx-text-fill: white;"/>
+            </HBox>
+        </VBox>
+    </center>
+
+    <!-- Bottom Table -->
+    <bottom>
+        <VBox style="-fx-padding: 20;">
+            <TableView fx:id="tblCourses" prefHeight="250">
+                <columns>
+                    <TableColumn fx:id="colCourseId" text="Course ID" prefWidth="100"/>
+                    <TableColumn fx:id="colCourseName" text="Course Name" prefWidth="200"/>
+                    <TableColumn fx:id="colDuration" text="Duration" prefWidth="150"/>
+                    <TableColumn fx:id="colFee" text="Fee (LKR)" prefWidth="150"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </bottom>
+
+</BorderPane>
