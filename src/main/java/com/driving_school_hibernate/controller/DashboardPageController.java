@@ -3,6 +3,7 @@ package com.driving_school_hibernate.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
 public class DashboardPageController {
@@ -11,13 +12,22 @@ public class DashboardPageController {
     private Button btnCourses;
 
     @FXML
+    private Button btnDashboard;
+
+    @FXML
     private Button btnEnrollments;
 
     @FXML
     private Button btnInstructors;
 
     @FXML
+    private Button btnLessons;
+
+    @FXML
     private Button btnLogout;
+
+    @FXML
+    private Button btnPayments;
 
     @FXML
     private Button btnStudents;
@@ -26,10 +36,18 @@ public class DashboardPageController {
     private Button btnUsers;
 
     @FXML
+    private Label lblLoggedUser;
+
+    @FXML
     private StackPane mainContent;
 
     @FXML
     void handleCourses(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleDashboard(ActionEvent event) {
 
     }
 
@@ -44,7 +62,17 @@ public class DashboardPageController {
     }
 
     @FXML
+    void handleLessons(ActionEvent event) {
+
+    }
+
+    @FXML
     void handleLogout(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handlePayments(ActionEvent event) {
 
     }
 
