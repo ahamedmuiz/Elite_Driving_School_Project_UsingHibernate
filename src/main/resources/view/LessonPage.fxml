@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.driving_school_hibernate.controller.LessonPageController">
+
+    <!-- Top Title -->
+    <top>
+        <HBox alignment="CENTER_LEFT"
+              style="-fx-background-color: #2C3E50; -fx-padding: 15;">
+            <Label text="Lesson Scheduling &amp; Instructor-Course Assignment"
+                   style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" />
+        </HBox>
+    </top>
+
+    <!-- Center Form -->
+    <center>
+        <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 20;">
+            <GridPane hgap="15" vgap="12" alignment="CENTER_LEFT">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" minWidth="120"/>
+                    <ColumnConstraints halignment="LEFT" minWidth="250"/>
+                </columnConstraints>
+
+                <Label text="Lesson ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtLessonId" promptText="Auto-generated" editable="false"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Student:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="cmbStudent" promptText="Select student"
+                          GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Course:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="cmbCourse" promptText="Select course"
+                          GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="Instructor:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="cmbInstructor" promptText="Select instructor"
+                          GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                <Label text="Date:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <DatePicker fx:id="dateLesson"
+                            GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                <Label text="Time:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtTime" promptText="e.g. 10:00 AM"
+                           GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                <Label text="Status:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                <ChoiceBox fx:id="choiceStatus" GridPane.rowIndex="6" GridPane.columnIndex="1">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Scheduled"/>
+                            <String fx:value="Completed"/>
+                            <String fx:value="Cancelled"/>
+                        </FXCollections>
+                    </items>
+                </ChoiceBox>
+            </GridPane>
+
+            <!-- Action Buttons -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button fx:id="btnAdd" text="Add" onAction="#handleAddLesson"
+                        style="-fx-background-color: #1ABC9C; -fx-text-fill: white; -fx-pref-width: 100;"/>
+                <Button fx:id="btnUpdate" text="Update" onAction="#handleUpdateLesson"
+                        style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-pref-width: 100;"/>
+                <Button fx:id="btnDelete" text="Delete" onAction="#handleDeleteLesson"
+                        style="-fx-background-color: #E74C3C; -fx-text-fill: white; -fx-pref-width: 100;"/>
+                <Button fx:id="btnClear" text="Clear" onAction="#handleClearForm"
+                        style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-pref-width: 100;"/>
+            </HBox>
+
+            <!-- Search Section -->
+            <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10 0 0 0;">
+                <Label text="Search by Student Name:"/>
+                <TextField fx:id="txtSearch" promptText="Enter student name"/>
+                <Button fx:id="btnSearch" text="Search" onAction="#handleSearchLesson"
+                        style="-fx-background-color: #F39C12; -fx-text-fill: white;"/>
+                <Button fx:id="btnViewAll" text="View All" onAction="#handleViewAllLessons"
+                        style="-fx-background-color: #2ECC71; -fx-text-fill: white;"/>
+            </HBox>
+        </VBox>
+    </center>
+
+    <!-- Bottom Table -->
+    <bottom>
+        <VBox style="-fx-padding: 20;">
+            <TableView fx:id="tblLessons" prefHeight="250">
+                <columns>
+                    <TableColumn fx:id="colLessonId" text="Lesson ID" prefWidth="80"/>
+                    <TableColumn fx:id="colStudent" text="Student" prefWidth="150"/>
+                    <TableColumn fx:id="colCourse" text="Course" prefWidth="150"/>
+                    <TableColumn fx:id="colInstructor" text="Instructor" prefWidth="150"/>
+                    <TableColumn fx:id="colDate" text="Date" prefWidth="120"/>
+                    <TableColumn fx:id="colTime" text="Time" prefWidth="100"/>
+                    <TableColumn fx:id="colStatus" text="Status" prefWidth="120"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </bottom>
+
+</BorderPane>
