@@ -8,6 +8,7 @@ module com.driving_school_hibernate {
     requires org.hibernate.orm.core;
     requires jakarta.persistence;
     requires java.naming;
+    requires com.driving_school_hibernate;
 
     opens com.driving_school_hibernate.config to jakarta.persistence;
 //    opens com.driving_school_hibernate.entity to org.hibernate.orm.core;

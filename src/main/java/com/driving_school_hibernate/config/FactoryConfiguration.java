@@ -1,5 +1,6 @@
 package com.driving_school_hibernate.config;
 
+import com.driving_school_hibernate.entity.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -13,10 +14,12 @@ public class FactoryConfiguration {
         configuration.configure(); // 1 (xml) load configuration
 
         // 2 add entity classes
-//        configuration.addAnnotatedClass(Customer.class);
-//        configuration.addAnnotatedClass(Item.class);
-//        configuration.addAnnotatedClass(Order.class);
-//        configuration.addAnnotatedClass(OrderDetail.class);
+        configuration.addAnnotatedClass(StudentEntity.class);
+        configuration.addAnnotatedClass(InstructorEntity.class);
+        configuration.addAnnotatedClass(CourseEntity.class);
+        configuration.addAnnotatedClass(LessonEntity.class);
+        configuration.addAnnotatedClass(PaymentEntity.class);
+        configuration.addAnnotatedClass(UsersEntity.class);
 
         // 3 create session factory
         sessionFactory = configuration.buildSessionFactory();
