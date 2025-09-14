@@ -14,7 +14,7 @@
         <HBox alignment="CENTER_LEFT"
               style="-fx-background-color: #2C3E50; -fx-padding: 15;">
             <Label text="Student Management"
-                   style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+                   style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
         </HBox>
     </top>
 
