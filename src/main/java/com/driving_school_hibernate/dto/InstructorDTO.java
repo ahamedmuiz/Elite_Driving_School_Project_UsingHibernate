@@ -7,12 +7,13 @@ import lombok.*;
 @Setter
 @Getter
 @ToString
-public class StudentDTO {
-    private String studentId;
+public class InstructorDTO {
+    private String instructorId;
     private String firstName;
     private String lastName;
     private String nic;
     private String phone;
     private String email;
-    private String address;
+    private String specialization;
+    private String availability; // "Available" | "Not Available"
 }
