@@ -1,4 +1,7 @@
 package com.driving_school_hibernate.dao.custom;
 
-public interface InstructorDAO {
+import com.driving_school_hibernate.dao.CrudDAO;
+import com.driving_school_hibernate.entity.InstructorEntity;
+
+public interface InstructorDAO extends CrudDAO<InstructorEntity> {
 }
