@@ -1,4 +1,7 @@
 package com.driving_school_hibernate.dao.custom;
 
-public interface LessonDAO {
+import com.driving_school_hibernate.dao.CrudDAO;
+import com.driving_school_hibernate.entity.LessonEntity;
+
+public interface LessonDAO extends CrudDAO<LessonEntity> {
 }
