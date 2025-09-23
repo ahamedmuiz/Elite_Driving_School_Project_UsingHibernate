@@ -7,11 +7,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface PaymentBO extends SuperBO {
-    boolean savePayment(PaymentDTO dto) throws SQLException;
-    boolean updatePayment(PaymentDTO dto) throws SQLException;
-    boolean deletePayment(String id) throws SQLException;
-    PaymentDTO findPaymentById(String id) throws SQLException;
+    boolean savePayment(PaymentDTO paymentDTO) throws SQLException;
+    boolean updatePayment(PaymentDTO paymentDTO) throws SQLException;
+    boolean deletePayment(String paymentId) throws SQLException;
+    PaymentDTO findPaymentById(String paymentId) throws SQLException;
     List<PaymentDTO> findAllPayments() throws SQLException;
     List<PaymentDTO> searchPaymentsByStudentName(String name) throws SQLException;
-    String generateNewPaymentId() throws SQLException;
+    String generateNextPaymentId() throws SQLException;
+    boolean isDuplicatePayment(String studentId, String courseId) throws SQLException;
 }

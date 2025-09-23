@@ -1,60 +1,78 @@
 package com.driving_school_hibernate.controller;
 
 import com.driving_school_hibernate.bo.BOFactory;
+import com.driving_school_hibernate.bo.BOTypes;
 import com.driving_school_hibernate.bo.custom.PaymentBO;
+import com.driving_school_hibernate.bo.custom.StudentBO;
+import com.driving_school_hibernate.bo.custom.CourseBO;
 import com.driving_school_hibernate.dto.PaymentDTO;
-import com.driving_school_hibernate.entity.CourseEntity;
-import com.driving_school_hibernate.entity.StudentEntity;
-import com.driving_school_hibernate.config.FactoryConfiguration;
+import com.driving_school_hibernate.dto.StudentDTO;
+import com.driving_school_hibernate.dto.CourseDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.hibernate.Session;
 
+import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class PaymentPageController {
+public class PaymentPageController implements Initializable {
 
-    @FXML
-    private ComboBox<StudentEntity> cmbStudent;   // FIXED: was String
-    @FXML
-    private ComboBox<CourseEntity> cmbCourse;     // FIXED: was String
+    @FXML private Button btnAdd;
+    @FXML private Button btnClear;
+    @FXML private Button btnDelete;
+    @FXML private Button btnSearch;
+    @FXML private Button btnUpdate;
+    @FXML private Button btnViewAll;
 
-    @FXML
-    private ChoiceBox<String> choiceMethod, choiceStatus;
+    @FXML private ChoiceBox<String> choiceMethod;
+    @FXML private ChoiceBox<String> choiceStatus;
 
-    @FXML
-    private TableView<PaymentDTO> tblPayments;
+    @FXML private ComboBox<String> cmbCourse;
+    @FXML private ComboBox<String> cmbStudent;
 
-    @FXML
-    private TableColumn<PaymentDTO, String> colPaymentId, colStudent, colCourse, colMethod, colStatus;
+    @FXML private TableColumn<PaymentDTO, String> colAmount;
+    @FXML private TableColumn<PaymentDTO, String> colCourse;
+    @FXML private TableColumn<PaymentDTO, String> colDate;
+    @FXML private TableColumn<PaymentDTO, String> colMethod;
+    @FXML private TableColumn<PaymentDTO, String> colPaymentId;
+    @FXML private TableColumn<PaymentDTO, String> colStatus;
+    @FXML private TableColumn<PaymentDTO, String> colStudent;
 
-    @FXML
-    private TableColumn<PaymentDTO, Double> colAmount;
+    @FXML private DatePicker datePayment;
+    @FXML private TableView<PaymentDTO> tblPayments;
+    @FXML private TextField txtAmount;
+    @FXML private TextField txtPaymentId;
+    @FXML private TextField txtSearch;
 
-    @FXML
-    private TableColumn<PaymentDTO, LocalDate> colDate;
 
-    @FXML
-    private TextField txtPaymentId, txtAmount, txtSearch;
 
-    @FXML
-    private DatePicker datePayment;
+    private final PaymentBO paymentBO = BOFactory.getInstance().getBO(BOTypes.PAYMENT);
+    private final StudentBO studentBO = BOFactory.getInstance().getBO(BOTypes.STUDENT);
+    private final CourseBO courseBO = BOFactory.getInstance().getBO(BOTypes.COURSE);
 
-    private final PaymentBO paymentBO = BOFactory.getInstance().getBO(com.driving_school_hibernate.bo.BOTypes.PAYMENT);
+    private ObservableList<PaymentDTO> paymentList = FXCollections.observableArrayList();
+    private ObservableList<String> studentList = FXCollections.observableArrayList();
+    private ObservableList<String> courseList = FXCollections.observableArrayList();
 
-    @FXML
-    public void initialize() {
-        txtPaymentId.setEditable(false);
-        txtPaymentId.setDisable(true);
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        initializeUI();
+        loadStudents();
+        loadCourses();
+        loadAllPayments();
+        generateNextPaymentId();
+        setCurrentDate();
+    }
 
-        loadNewPaymentId();
-
+    private void initializeUI() {
+        // Setup table columns
         colPaymentId.setCellValueFactory(new PropertyValueFactory<>("paymentId"));
         colStudent.setCellValueFactory(new PropertyValueFactory<>("studentId"));
         colCourse.setCellValueFactory(new PropertyValueFactory<>("courseId"));
@@ -63,192 +81,287 @@ public class PaymentPageController {
         colMethod.setCellValueFactory(new PropertyValueFactory<>("method"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        loadStudents();
-        loadCourses();
+        // Setup choice boxes
+        choiceMethod.setItems(FXCollections.observableArrayList("Cash", "Card"));
+        choiceStatus.setItems(FXCollections.observableArrayList("Advance Payment", "Full Payment"));
 
-        try {
-            loadAllPayments();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+        // Set default values
+        choiceMethod.setValue("Cash");
+        choiceStatus.setValue("Advance Payment");
 
-    private void loadNewPaymentId() {
-        try {
-            txtPaymentId.setText(paymentBO.generateNewPaymentId());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
+        // Make payment ID non-editable and disabled
+        txtPaymentId.setEditable(false);
+        txtPaymentId.setDisable(true);
+
+        // Set current date
+        datePayment.setValue(LocalDate.now());
+
+        // Add table selection listener
+        tblPayments.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        setPaymentData(newValue);
+                    }
+                }
+        );
     }
 
     private void loadStudents() {
-        Session session = FactoryConfiguration.getInstance().getSession();
-        List<StudentEntity> students = session.createQuery("from StudentEntity", StudentEntity.class).list();
-        session.close();
-
-        ObservableList<StudentEntity> list = FXCollections.observableArrayList(students);
-        cmbStudent.setItems(list);
-
-        // Display "ID - Name"
-        cmbStudent.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(StudentEntity student, boolean empty) {
-                super.updateItem(student, empty);
-                if (empty || student == null) {
-                    setText(null);
-                } else {
-                    setText(student.getStudentId() + " - " + student.getFirstName() + " " + student.getLastName());
-                }
+        try {
+            List<StudentDTO> students = studentBO.findAllStudents();
+            studentList.clear();
+            for (StudentDTO student : students) {
+                studentList.add(student.getStudentId() + " - " + student.getFirstName() + " " + student.getLastName());
             }
-        });
-
-        cmbStudent.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(StudentEntity student, boolean empty) {
-                super.updateItem(student, empty);
-                if (empty || student == null) {
-                    setText(null);
-                } else {
-                    setText(student.getStudentId() + " - " + student.getFirstName() + " " + student.getLastName());
-                }
-            }
-        });
+            cmbStudent.setItems(studentList);
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error loading students: " + e.getMessage());
+        }
     }
 
     private void loadCourses() {
-        Session session = FactoryConfiguration.getInstance().getSession();
-        List<CourseEntity> courses = session.createQuery("from CourseEntity", CourseEntity.class).list();
-        session.close();
-
-        ObservableList<CourseEntity> list = FXCollections.observableArrayList(courses);
-        cmbCourse.setItems(list);
-
-        // Display "ID - Name"
-        cmbCourse.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(CourseEntity course, boolean empty) {
-                super.updateItem(course, empty);
-                if (empty || course == null) {
-                    setText(null);
-                } else {
-                    setText(course.getCourseId() + " - " + course.getName());
-                }
+        try {
+            List<CourseDTO> courses = courseBO.findAllCourses();
+            courseList.clear();
+            for (CourseDTO course : courses) {
+                courseList.add(course.getCourseId() + " - " + course.getName() + " (LKR " + course.getFee() + ")");
             }
-        });
-
-        cmbCourse.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(CourseEntity course, boolean empty) {
-                super.updateItem(course, empty);
-                if (empty || course == null) {
-                    setText(null);
-                } else {
-                    setText(course.getCourseId() + " - " + course.getName());
-                }
-            }
-        });
+            cmbCourse.setItems(courseList);
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error loading courses: " + e.getMessage());
+        }
     }
 
-    private void loadAllPayments() throws SQLException {
-        List<PaymentDTO> payments = paymentBO.findAllPayments();
-        tblPayments.setItems(FXCollections.observableArrayList(payments));
+    private void loadAllPayments() {
+        try {
+            List<PaymentDTO> payments = paymentBO.findAllPayments();
+            paymentList.setAll(payments);
+            tblPayments.setItems(paymentList);
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error loading payments: " + e.getMessage());
+        }
+    }
+
+    private void generateNextPaymentId() {
+        try {
+            String nextId = paymentBO.generateNextPaymentId();
+            txtPaymentId.setText(nextId);
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error generating payment ID: " + e.getMessage());
+        }
+    }
+
+    private void setCurrentDate() {
+        datePayment.setValue(LocalDate.now());
     }
 
     @FXML
     void handleAddPayment(ActionEvent event) {
         try {
-            StudentEntity student = cmbStudent.getValue();
-            CourseEntity course = cmbCourse.getValue();
+            if (!validateInput()) return;
 
-            PaymentDTO dto = new PaymentDTO(
-                    txtPaymentId.getText(),
-                    student.getStudentId(),
-                    course.getCourseId(),
-                    Double.parseDouble(txtAmount.getText()),
-                    datePayment.getValue(),
-                    choiceMethod.getValue(),
-                    choiceStatus.getValue()
-            );
+            PaymentDTO paymentDTO = getPaymentDataFromForm();
 
-            if (paymentBO.savePayment(dto)) {
-                new Alert(Alert.AlertType.INFORMATION, "Payment Added!").show();
-                loadAllPayments();
-                loadNewPaymentId();
-                handleClearForm(null);
+            // Check for duplicate payment
+            if (paymentBO.isDuplicatePayment(paymentDTO.getStudentId(), paymentDTO.getCourseId())) {
+                showAlert(Alert.AlertType.WARNING, "This student has already paid for the selected course.");
+                return;
             }
-        } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "Error: " + e.getMessage()).show();
-            e.printStackTrace();
+
+            boolean saved = paymentBO.savePayment(paymentDTO);
+            if (saved) {
+                showAlert(Alert.AlertType.INFORMATION, "Payment added successfully!");
+                clearForm();
+                loadAllPayments();
+                generateNextPaymentId();
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Failed to add payment.");
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error adding payment: " + e.getMessage());
         }
     }
 
     @FXML
     void handleUpdatePayment(ActionEvent event) {
         try {
-            StudentEntity student = cmbStudent.getValue();
-            CourseEntity course = cmbCourse.getValue();
-
-            PaymentDTO dto = new PaymentDTO(
-                    txtPaymentId.getText(),
-                    student.getStudentId(),
-                    course.getCourseId(),
-                    Double.parseDouble(txtAmount.getText()),
-                    datePayment.getValue(),
-                    choiceMethod.getValue(),
-                    choiceStatus.getValue()
-            );
-
-            if (paymentBO.updatePayment(dto)) {
-                new Alert(Alert.AlertType.CONFIRMATION, "Payment Updated!").show();
-                loadAllPayments();
-                handleClearForm(null);
+            if (!validateInput()) return;
+            if (txtPaymentId.getText().isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Please select a payment to update.");
+                return;
             }
-        } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "Error: " + e.getMessage()).show();
-            e.printStackTrace();
+
+            PaymentDTO paymentDTO = getPaymentDataFromForm();
+            boolean updated = paymentBO.updatePayment(paymentDTO);
+
+            if (updated) {
+                showAlert(Alert.AlertType.INFORMATION, "Payment updated successfully!");
+                clearForm();
+                loadAllPayments();
+                generateNextPaymentId();
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Failed to update payment.");
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error updating payment: " + e.getMessage());
         }
     }
 
     @FXML
     void handleDeletePayment(ActionEvent event) {
         try {
-            if (paymentBO.deletePayment(txtPaymentId.getText())) {
-                new Alert(Alert.AlertType.CONFIRMATION, "Payment Deleted!").show();
-                loadAllPayments();
-                loadNewPaymentId();
-                handleClearForm(null);
+            String paymentId = txtPaymentId.getText();
+            if (paymentId.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Please select a payment to delete.");
+                return;
             }
-        } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "Error: " + e.getMessage()).show();
+
+            Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmation.setTitle("Confirm Delete");
+            confirmation.setHeaderText("Delete Payment");
+            confirmation.setContentText("Are you sure you want to delete this payment?");
+
+            if (confirmation.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                boolean deleted = paymentBO.deletePayment(paymentId);
+                if (deleted) {
+                    showAlert(Alert.AlertType.INFORMATION, "Payment deleted successfully!");
+                    clearForm();
+                    loadAllPayments();
+                    generateNextPaymentId();
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Failed to delete payment.");
+                }
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error deleting payment: " + e.getMessage());
         }
     }
 
     @FXML
     void handleSearchPayment(ActionEvent event) {
         try {
-            List<PaymentDTO> list = paymentBO.searchPaymentsByStudentName(txtSearch.getText());
-            tblPayments.setItems(FXCollections.observableArrayList(list));
+            String searchText = txtSearch.getText().trim();
+            if (searchText.isEmpty()) {
+                loadAllPayments();
+                return;
+            }
+
+            List<PaymentDTO> payments = paymentBO.searchPaymentsByStudentName(searchText);
+            paymentList.setAll(payments);
+            tblPayments.setItems(paymentList);
         } catch (SQLException e) {
-            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error searching payments: " + e.getMessage());
         }
     }
 
     @FXML
     void handleViewAllPayments(ActionEvent event) {
-        try {
-            loadAllPayments();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        txtSearch.clear();
+        loadAllPayments();
     }
 
     @FXML
     void handleClearForm(ActionEvent event) {
-        cmbStudent.setValue(null);
-        cmbCourse.setValue(null);
+        clearForm();
+    }
+
+    private PaymentDTO getPaymentDataFromForm() {
+        String studentId = cmbStudent.getValue() != null ?
+                cmbStudent.getValue().split(" - ")[0] : "";
+        String courseId = cmbCourse.getValue() != null ?
+                cmbCourse.getValue().split(" - ")[0] : "";
+
+        return new PaymentDTO(
+                txtPaymentId.getText(),
+                studentId,
+                courseId,
+                Double.parseDouble(txtAmount.getText()),
+                datePayment.getValue(),
+                choiceMethod.getValue(),
+                choiceStatus.getValue()
+        );
+    }
+
+    private void setPaymentData(PaymentDTO payment) {
+        txtPaymentId.setText(payment.getPaymentId());
+
+        // Set student combo box
+        for (String studentItem : studentList) {
+            if (studentItem.startsWith(payment.getStudentId())) {
+                cmbStudent.setValue(studentItem);
+                break;
+            }
+        }
+
+        // Set course combo box
+        for (String courseItem : courseList) {
+            if (courseItem.startsWith(payment.getCourseId())) {
+                cmbCourse.setValue(courseItem);
+                break;
+            }
+        }
+
+        txtAmount.setText(String.valueOf(payment.getAmount()));
+        datePayment.setValue(payment.getPaymentDate());
+        choiceMethod.setValue(payment.getMethod());
+        choiceStatus.setValue(payment.getStatus());
+    }
+
+    private boolean validateInput() {
+        if (cmbStudent.getValue() == null || cmbStudent.getValue().isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Please select a student.");
+            return false;
+        }
+        if (cmbCourse.getValue() == null || cmbCourse.getValue().isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Please select a course.");
+            return false;
+        }
+        if (txtAmount.getText().isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Please enter the amount.");
+            return false;
+        }
+        try {
+            double amount = Double.parseDouble(txtAmount.getText());
+            if (amount <= 0) {
+                showAlert(Alert.AlertType.WARNING, "Amount must be greater than 0.");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.WARNING, "Please enter a valid amount.");
+            return false;
+        }
+        if (datePayment.getValue() == null) {
+            showAlert(Alert.AlertType.WARNING, "Please select a payment date.");
+            return false;
+        }
+        if (choiceMethod.getValue() == null) {
+            showAlert(Alert.AlertType.WARNING, "Please select a payment method.");
+            return false;
+        }
+        if (choiceStatus.getValue() == null) {
+            showAlert(Alert.AlertType.WARNING, "Please select a payment status.");
+            return false;
+        }
+        return true;
+    }
+
+    private void clearForm() {
+        txtPaymentId.clear();
+        cmbStudent.getSelectionModel().clearSelection();
+        cmbCourse.getSelectionModel().clearSelection();
         txtAmount.clear();
-        datePayment.setValue(null);
-        choiceMethod.setValue(null);
-        choiceStatus.setValue(null);
+        datePayment.setValue(LocalDate.now());
+        choiceMethod.setValue("Cash");
+        choiceStatus.setValue("Pending");
+        generateNextPaymentId();
+    }
+
+    private void showAlert(Alert.AlertType alertType, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle("Payment Management");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

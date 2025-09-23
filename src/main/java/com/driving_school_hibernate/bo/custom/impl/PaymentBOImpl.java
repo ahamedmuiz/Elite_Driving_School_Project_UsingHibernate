@@ -2,72 +2,155 @@ package com.driving_school_hibernate.bo.custom.impl;
 
 import com.driving_school_hibernate.bo.custom.PaymentBO;
 import com.driving_school_hibernate.bo.util.EntityDTOConvertor;
+import com.driving_school_hibernate.config.FactoryConfiguration;
 import com.driving_school_hibernate.dao.DAOFactory;
+import com.driving_school_hibernate.dao.custom.CourseDAO;
 import com.driving_school_hibernate.dao.custom.PaymentDAO;
+import com.driving_school_hibernate.dao.custom.StudentDAO;
 import com.driving_school_hibernate.dto.PaymentDTO;
 import com.driving_school_hibernate.entity.CourseEntity;
 import com.driving_school_hibernate.entity.PaymentEntity;
 import com.driving_school_hibernate.entity.StudentEntity;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PaymentBOImpl implements PaymentBO {
 
     private final PaymentDAO paymentDAO = DAOFactory.getInstance().getDAO(DAOFactory.DAOTypes.PAYMENT);
+    private final StudentDAO studentDAO = DAOFactory.getInstance().getDAO(DAOFactory.DAOTypes.STUDENT);
+    private final CourseDAO courseDAO = DAOFactory.getInstance().getDAO(DAOFactory.DAOTypes.COURSE);
 
     @Override
-    public boolean savePayment(PaymentDTO dto) throws SQLException {
-        Session session = com.driving_school_hibernate.config.FactoryConfiguration.getInstance().getSession();
-        StudentEntity student = session.get(StudentEntity.class, dto.getStudentId());
-        CourseEntity course = session.get(CourseEntity.class, dto.getCourseId());
-        session.close();
-        return paymentDAO.save(EntityDTOConvertor.toEntity(dto, student, course));
+    public boolean savePayment(PaymentDTO paymentDTO) throws SQLException {
+        try (Session session = FactoryConfiguration.getInstance().getSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                // Check if student exists
+                Optional<StudentEntity> student = studentDAO.findById(paymentDTO.getStudentId());
+                if (student.isEmpty()) {
+                    throw new SQLException("Student not found with ID: " + paymentDTO.getStudentId());
+                }
+
+                // Check if course exists
+                Optional<CourseEntity> course = courseDAO.findById(paymentDTO.getCourseId());
+                if (course.isEmpty()) {
+                    throw new SQLException("Course not found with ID: " + paymentDTO.getCourseId());
+                }
+
+                // Check for duplicate payment
+                if (paymentDAO.existsByStudentAndCourse(paymentDTO.getStudentId(), paymentDTO.getCourseId())) {
+                    throw new SQLException("Payment already exists for this student and course");
+                }
+
+                PaymentEntity paymentEntity = EntityDTOConvertor.toEntity(paymentDTO, student.get(), course.get());
+                boolean saved = paymentDAO.save(paymentEntity);
+
+                if (saved) {
+                    transaction.commit();
+                } else {
+                    transaction.rollback();
+                }
+                return saved;
+            } catch (Exception e) {
+                transaction.rollback();
+                throw new SQLException("Failed to save payment: " + e.getMessage(), e);
+            }
+        }
     }
 
     @Override
-    public boolean updatePayment(PaymentDTO dto) throws SQLException {
-        Session session = com.driving_school_hibernate.config.FactoryConfiguration.getInstance().getSession();
-        StudentEntity student = session.get(StudentEntity.class, dto.getStudentId());
-        CourseEntity course = session.get(CourseEntity.class, dto.getCourseId());
-        session.close();
-        return paymentDAO.update(EntityDTOConvertor.toEntity(dto, student, course));
+    public boolean updatePayment(PaymentDTO paymentDTO) throws SQLException {
+        try (Session session = FactoryConfiguration.getInstance().getSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                // Check if payment exists
+                Optional<PaymentEntity> existingPayment = paymentDAO.findById(paymentDTO.getPaymentId());
+                if (existingPayment.isEmpty()) {
+                    throw new SQLException("Payment not found with ID: " + paymentDTO.getPaymentId());
+                }
+
+                // Check if student exists
+                Optional<StudentEntity> student = studentDAO.findById(paymentDTO.getStudentId());
+                if (student.isEmpty()) {
+                    throw new SQLException("Student not found with ID: " + paymentDTO.getStudentId());
+                }
+
+                // Check if course exists
+                Optional<CourseEntity> course = courseDAO.findById(paymentDTO.getCourseId());
+                if (course.isEmpty()) {
+                    throw new SQLException("Course not found with ID: " + paymentDTO.getCourseId());
+                }
+
+                PaymentEntity paymentEntity = EntityDTOConvertor.toEntity(paymentDTO, student.get(), course.get());
+                boolean updated = paymentDAO.update(paymentEntity);
+
+                if (updated) {
+                    transaction.commit();
+                } else {
+                    transaction.rollback();
+                }
+                return updated;
+            } catch (Exception e) {
+                transaction.rollback();
+                throw new SQLException("Failed to update payment: " + e.getMessage(), e);
+            }
+        }
     }
 
     @Override
-    public boolean deletePayment(String id) throws SQLException {
-        return paymentDAO.delete(id);
+    public boolean deletePayment(String paymentId) throws SQLException {
+        return paymentDAO.delete(paymentId);
     }
 
     @Override
-    public PaymentDTO findPaymentById(String id) throws SQLException {
-        return paymentDAO.findById(id).map(EntityDTOConvertor::fromEntity).orElse(null);
+    public PaymentDTO findPaymentById(String paymentId) throws SQLException {
+        Optional<PaymentEntity> paymentEntity = paymentDAO.findById(paymentId);
+        return paymentEntity.map(EntityDTOConvertor::fromEntity).orElse(null);
     }
 
     @Override
     public List<PaymentDTO> findAllPayments() throws SQLException {
-        return paymentDAO.findAll().stream()
+        List<PaymentEntity> paymentEntities = paymentDAO.findAll();
+        return paymentEntities.stream()
                 .map(EntityDTOConvertor::fromEntity)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<PaymentDTO> searchPaymentsByStudentName(String name) throws SQLException {
-        return paymentDAO.searchByName(name).stream()
+        List<PaymentEntity> paymentEntities = paymentDAO.searchByName(name);
+        return paymentEntities.stream()
                 .map(EntityDTOConvertor::fromEntity)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public String generateNewPaymentId() throws SQLException {
-        String lastId = paymentDAO.findLastId().orElse(null);
-        if (lastId != null) {
-            int num = Integer.parseInt(lastId.substring(1)) + 1;
-            return String.format("P%03d", num);
-        } else {
-            return "P001";
+    public String generateNextPaymentId() throws SQLException {
+        Optional<String> lastId = paymentDAO.findLastId();
+        if (lastId.isPresent()) {
+            String lastPaymentId = lastId.get();
+            try {
+                int number = Integer.parseInt(lastPaymentId.substring(1)); // Remove "P" prefix
+                return String.format("P%03d", number + 1);
+            } catch (NumberFormatException e) {
+                throw new SQLException("Invalid payment ID format: " + lastPaymentId);
+            }
+        }
+        return "P001"; // First payment ID
+    }
+
+    @Override
+    public boolean isDuplicatePayment(String studentId, String courseId) throws SQLException {
+        try {
+            return paymentDAO.existsByStudentAndCourse(studentId, courseId);
+        } catch (Exception e) {
+            throw new SQLException("Failed to check duplicate payment: " + e.getMessage(), e);
         }
     }
 }
