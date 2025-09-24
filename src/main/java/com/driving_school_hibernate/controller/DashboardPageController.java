@@ -1,5 +1,6 @@
 package com.driving_school_hibernate.controller;
 
+import com.driving_school_hibernate.util.AuthUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,71 +19,109 @@ import java.util.Optional;
 
 public class DashboardPageController {
 
-    @FXML
-    private Button btnCourses;
+    @FXML private Button btnCourses;
+    @FXML private Button btnProfile;
+    @FXML private Button btnInstructors;
+    @FXML private Button btnLessons;
+    @FXML private Button btnLogout;
+    @FXML private Button btnPayments;
+    @FXML private Button btnStudents;
+    @FXML private Button btnUsers;
+    @FXML private Label lblLoggedUser;
+    @FXML private StackPane mainContent;
 
     @FXML
-    private Button btnProfile;
+    public void initialize() {
+        // Display logged-in user info
+        lblLoggedUser.setText("Welcome, " + AuthUtil.getCurrentUser() +
+                " (" + AuthUtil.getCurrentRole() + ")");
 
-    @FXML
-    private Button btnInstructors;
+        // Apply role-based access control
+        applyRoleBasedAccess();
 
-    @FXML
-    private Button btnLessons;
+        // Load default page based on role
+        loadDefaultPage();
+    }
 
-    @FXML
-    private Button btnLogout;
+    private void applyRoleBasedAccess() {
+        if (!AuthUtil.isAdmin()) {
+            // Disable admin-only features for regular users
+            btnUsers.setDisable(true);
+            btnUsers.setVisible(false); // Or just disable: btnUsers.setDisable(true);
 
-    @FXML
-    private Button btnPayments;
+            // You can also disable other admin-only features if needed
+            // btnStudents.setDisable(true);
+            // btnInstructors.setDisable(true);
+        }
 
-    @FXML
-    private Button btnStudents;
+        // Example: Only admin can manage users and view all payments
+        if (AuthUtil.isUser()) {
+            // Regular users might have limited access
+            btnUsers.setDisable(true);
+            btnUsers.setVisible(false);
 
-    @FXML
-    private Button btnUsers;
+            // Optionally disable other features for users
+            // btnPayments.setDisable(true);
+            // btnInstructors.setDisable(true);
+        }
+    }
 
-    @FXML
-    private Label lblLoggedUser;
-
-    @FXML
-    private StackPane mainContent;
+    private void loadDefaultPage() {
+        if (AuthUtil.isAdmin()) {
+            // Admin sees users management by default
+            loadUI("/view/UsersPage.fxml");
+        } else {
+            // Regular users see their profile by default
+            loadUI("/view/ProfilePage.fxml");
+        }
+    }
 
     // ------------------ HANDLERS -------------------
-
     @FXML
     void handleProfile(ActionEvent event) {
-        loadUI("/view/ProfilePage.fxml"); // profile page
+        loadUI("/view/ProfilePage.fxml");
     }
 
     @FXML
     void handleStudents(ActionEvent event) {
-        loadUI("/view/StudentPage.fxml");
+        if (checkAccess("Student Management")) {
+            loadUI("/view/StudentPage.fxml");
+        }
     }
 
     @FXML
     void handleCourses(ActionEvent event) {
-        loadUI("/view/CoursePage.fxml");
+        if (checkAccess("Course Management")) {
+            loadUI("/view/CoursePage.fxml");
+        }
     }
 
     @FXML
     void handleInstructors(ActionEvent event) {
-        loadUI("/view/InstructorPage.fxml");
+        if (checkAccess("Instructor Management")) {
+            loadUI("/view/InstructorPage.fxml");
+        }
     }
 
     @FXML
     void handleLessons(ActionEvent event) {
-        loadUI("/view/LessonPage.fxml");
+        if (checkAccess("Lesson Management")) {
+            loadUI("/view/LessonPage.fxml");
+        }
     }
 
     @FXML
     void handlePayments(ActionEvent event) {
-        loadUI("/view/PaymentPage.fxml");
+        if (checkAccess("Payment Management")) {
+            loadUI("/view/PaymentPage.fxml");
+        }
     }
 
     @FXML
     void handleUsers(ActionEvent event) {
-        loadUI("/view/UsersPage.fxml");
+        if (checkAccess("User Management")) {
+            loadUI("/view/UsersPage.fxml");
+        }
     }
 
     @FXML
@@ -94,25 +133,64 @@ public class DashboardPageController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            try {
-                Parent loginPage = FXMLLoader.load(getClass().getResource("/view/LoginPage.fxml"));
-                Scene loginScene = new Scene(loginPage);
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.setScene(loginScene);
-                stage.centerOnScreen();
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            AuthUtil.logout();
+            navigateToLogin(event);
         }
     }
 
-    // ------------------ HELPER -------------------
+    // ------------------ HELPER METHODS -------------------
+    private boolean checkAccess(String feature) {
+        if (feature.equals("User Management") && !AuthUtil.isAdmin()) {
+            showAccessDenied("User Management is only available for administrators.");
+            return false;
+        }
+
+        // Add more access checks as needed
+        if (feature.equals("Student Management") && AuthUtil.isUser()) {
+            // Example: Only admin and instructors can manage students
+            // if (!AuthUtil.isAdmin() && !AuthUtil.isInstructor()) {
+            //     showAccessDenied("Student management requires admin or instructor privileges.");
+            //     return false;
+            // }
+        }
+
+        return true;
+    }
+
+    private void showAccessDenied(String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Access Denied");
+        alert.setHeaderText("Insufficient Permissions");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     private void loadUI(String fxmlPath) {
         try {
             Parent node = FXMLLoader.load(getClass().getResource(fxmlPath));
             mainContent.getChildren().clear();
             mainContent.getChildren().add(node);
+        } catch (IOException e) {
+            showErrorPage("Failed to load: " + fxmlPath);
+        }
+    }
+
+    private void showErrorPage(String message) {
+        Label errorLabel = new Label(message);
+        errorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 14px;");
+        mainContent.getChildren().clear();
+        mainContent.getChildren().add(errorLabel);
+    }
+
+    private void navigateToLogin(ActionEvent event) {
+        try {
+            Parent loginPage = FXMLLoader.load(getClass().getResource("/view/LoginPage.fxml"));
+            Scene loginScene = new Scene(loginPage);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(loginScene);
+            stage.setTitle("Elite Driving School - Login");
+            stage.centerOnScreen();
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
