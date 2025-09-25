@@ -67,13 +67,13 @@ public class DashboardPageController {
     }
 
     private void loadDefaultPage() {
-        if (AuthUtil.isAdmin()) {
-            // Admin sees users management by default
-            loadUI("/view/UsersPage.fxml");
-        } else {
-            // Regular users see their profile by default
-            loadUI("/view/ProfilePage.fxml");
-        }
+       if(AuthUtil.isAdmin() || AuthUtil.isUser()) {
+           loadUI("/view/ProfilePage.fxml");
+       }
+       else  {
+           loadUI("/view/LoginPage.fxml");
+
+       }
     }
 
     // ------------------ HANDLERS -------------------

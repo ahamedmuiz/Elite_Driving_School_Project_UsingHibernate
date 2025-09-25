@@ -27,18 +27,28 @@ public class LoginPageController {
 
     @FXML
     public void initialize() {
-        // Password visibility toggle
+        // Password visibility toggle - FIXED VERSION
         chkShowPassword.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
+                // Show password in visible text field
                 txtVisiblePassword.setText(txtPassword.getText());
                 txtVisiblePassword.setVisible(true);
+                txtVisiblePassword.setManaged(true);
                 txtPassword.setVisible(false);
+                txtPassword.setManaged(false);
             } else {
+                // Hide password, move text back to password field
                 txtPassword.setText(txtVisiblePassword.getText());
                 txtPassword.setVisible(true);
+                txtPassword.setManaged(true);
                 txtVisiblePassword.setVisible(false);
+                txtVisiblePassword.setManaged(false);
             }
         });
+
+        // Initially hide the visible password field
+        txtVisiblePassword.setVisible(false);
+        txtVisiblePassword.setManaged(false);
 
         // Clear button action
         btnClear.setOnAction(event -> clearForm());

@@ -14,4 +14,6 @@ public interface UsersBO extends SuperBO {
     List<UsersDTO> findAllUsers() throws SQLException;
     String generateNewUserId() throws SQLException;
     List<UsersDTO> searchUsersByName(String name) throws SQLException;
+    boolean updateUserProfile(UsersDTO dto) throws SQLException;
+
 }
