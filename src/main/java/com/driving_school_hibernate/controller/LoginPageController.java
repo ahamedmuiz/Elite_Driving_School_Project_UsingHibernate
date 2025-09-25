@@ -27,7 +27,7 @@ public class LoginPageController {
 
     @FXML
     public void initialize() {
-        // Password visibility toggle - FIXED VERSION
+        // Password visibility toggle
         chkShowPassword.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 // Show password in visible text field
@@ -83,15 +83,12 @@ public class LoginPageController {
 
     private void navigateToDashboard() {
         try {
-            // For now, navigate to UsersPage for both roles since we don't have separate dashboards
-            // You can create separate dashboard FXML files later
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DashboardPage.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) btnLogin.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Elite Driving School - User Management");
-            stage.centerOnScreen();
 
         } catch (IOException e) {
             e.printStackTrace();

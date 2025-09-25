@@ -20,54 +20,58 @@
 
     <!-- Center Form -->
     <center>
-        <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 30;">
-            <GridPane hgap="15" vgap="12" alignment="CENTER_LEFT">
-                <columnConstraints>
-                    <ColumnConstraints halignment="RIGHT" minWidth="120"/>
-                    <ColumnConstraints halignment="LEFT" minWidth="250"/>
-                </columnConstraints>
+        <ScrollPane fitToWidth="true" fitToHeight="true">
+            <AnchorPane minHeight="500" minWidth="600">
+                <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 30;" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+                    <GridPane hgap="15" vgap="12" alignment="CENTER_LEFT">
+                        <columnConstraints>
+                            <ColumnConstraints halignment="RIGHT" minWidth="120"/>
+                            <ColumnConstraints halignment="LEFT" minWidth="250"/>
+                        </columnConstraints>
 
-                <!-- User ID (read-only) -->
-                <Label text="User ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtUserId" promptText="Auto-generated" editable="false"
-                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <!-- User ID (read-only) -->
+                        <Label text="User ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <TextField fx:id="txtUserId" promptText="Auto-generated" editable="false"
+                                   GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-                <!-- Username (editable) -->
-                <Label text="Username:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtUsername" promptText="Enter new username"
-                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <!-- Username (editable) -->
+                        <Label text="Username:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <TextField fx:id="txtUsername" promptText="Enter new username"
+                                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-                <!-- Email (read-only) -->
-                <Label text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtEmail" editable="false"
-                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                        <!-- Email (read-only) -->
+                        <Label text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <TextField fx:id="txtEmail" editable="false"
+                                   GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-                <!-- Role (read-only) -->
-                <Label text="Role:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtRole" editable="false"
-                           GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                        <!-- Role (read-only) -->
+                        <Label text="Role:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <TextField fx:id="txtRole" editable="false"
+                                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-                <!-- Password (editable) -->
-                <Label text="Password:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                <PasswordField fx:id="txtPassword" promptText="Enter new password"
-                               GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                        <!-- Password (editable) -->
+                        <Label text="Password:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                        <PasswordField fx:id="txtPassword" promptText="Enter new password"
+                                       GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-                <!-- Confirm Password -->
-                <Label text="Confirm Password:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-                <PasswordField fx:id="txtConfirmPassword" promptText="Re-enter password"
-                               GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-            </GridPane>
+                        <!-- Confirm Password -->
+                        <Label text="Confirm Password:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                        <PasswordField fx:id="txtConfirmPassword" promptText="Re-enter password"
+                                       GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                    </GridPane>
 
-            <!-- Action Buttons -->
-            <HBox spacing="15" alignment="CENTER" style="-fx-padding: 20 0 0 0;">
-                <Button fx:id="btnUpdateProfile" text="Update Profile"
-                        onAction="#handleUpdateProfile"
-                        style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-pref-width: 140;"/>
-                <Button fx:id="btnClear" text="Clear"
-                        onAction="#handleClearForm"
-                        style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-pref-width: 100;"/>
-            </HBox>
-        </VBox>
+                    <!-- Action Buttons -->
+                    <HBox spacing="15" alignment="CENTER" style="-fx-padding: 20 0 0 0;">
+                        <Button fx:id="btnUpdateProfile" text="Update Profile"
+                                onAction="#handleUpdateProfile"
+                                style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-pref-width: 140;"/>
+                        <Button fx:id="btnClear" text="Clear"
+                                onAction="#handleClearForm"
+                                style="-fx-background-color: #95A5A6; -fx-text-fill: white; -fx-pref-width: 100;"/>
+                    </HBox>
+                </VBox>
+            </AnchorPane>
+        </ScrollPane>
     </center>
 
     <!-- Bottom Footer -->

@@ -188,8 +188,7 @@ public class DashboardPageController {
             Scene loginScene = new Scene(loginPage);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(loginScene);
-            stage.setTitle("Elite Driving School - Login");
-            stage.centerOnScreen();
+
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

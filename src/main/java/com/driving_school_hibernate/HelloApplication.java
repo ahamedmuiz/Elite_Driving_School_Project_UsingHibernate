@@ -17,7 +17,6 @@ public class HelloApplication extends Application {
         Parent parent = FXMLLoader.load(getClass().getResource("/view/LoginPage.fxml"));
         Scene scene = new Scene(parent);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Elite Driving School");
         primaryStage.setResizable(true);
         primaryStage.show();
     }
