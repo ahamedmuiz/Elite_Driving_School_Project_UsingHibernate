@@ -12,6 +12,7 @@ import com.driving_school_hibernate.dto.StudentDTO;
 import com.driving_school_hibernate.entity.CourseEntity;
 import com.driving_school_hibernate.entity.InstructorEntity;
 import com.driving_school_hibernate.entity.StudentEntity;
+import com.driving_school_hibernate.util.AuthUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,6 +38,8 @@ public class LessonPageController {
     @FXML private ComboBox<InstructorDTO> cmbInstructor;
     @FXML private ChoiceBox<String> choiceStatus;
 
+    @FXML private Button btnDelete;
+
     private final LessonBO lessonBO = BOFactory.getInstance().getBO(BOTypes.LESSON);
     private final ObservableList<LessonDTO> lessonList = FXCollections.observableArrayList();
 
@@ -58,6 +61,8 @@ public class LessonPageController {
         // disable LessonId editing & clicking
         txtLessonId.setEditable(false);
         txtLessonId.setDisable(true);
+
+        applyRoleBasedAccess();
 
         // setup table columns (show ids by default + readable names via maps)
         colLessonId.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getLessonId()));
@@ -117,6 +122,11 @@ public class LessonPageController {
         });
     }
 
+    private void applyRoleBasedAccess() {
+        if (!AuthUtil.isAdmin()) {
+            btnDelete.setDisable(true);
+        }
+    }
     private void loadCombosAndMaps() {
         try (Session session = FactoryConfiguration.getInstance().getSession()) {
             // students

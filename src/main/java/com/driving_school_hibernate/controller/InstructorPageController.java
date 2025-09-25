@@ -4,6 +4,7 @@ import com.driving_school_hibernate.bo.BOFactory;
 import com.driving_school_hibernate.bo.BOTypes;
 import com.driving_school_hibernate.bo.custom.InstructorBO;
 import com.driving_school_hibernate.dto.InstructorDTO;
+import com.driving_school_hibernate.util.AuthUtil;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -41,6 +42,8 @@ public class InstructorPageController {
         txtInstructorId.setEditable(false);
         txtInstructorId.setDisable(true);
 
+        applyRoleBasedAccess();
+
         colInstructorId.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getInstructorId()));
         colFirstName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFirstName()));
         colLastName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getLastName()));
@@ -66,6 +69,16 @@ public class InstructorPageController {
         } catch (SQLException e) {
             showError("Initialization failed: " + e.getMessage());
         }
+    }
+
+    private void applyRoleBasedAccess() {
+
+        if (!AuthUtil.isAdmin()) {
+            btnAdd.setDisable(true);
+            btnUpdate.setDisable(true);
+            btnDelete.setDisable(true);
+        }
+
     }
 
     private void setNewInstructorId() throws SQLException {

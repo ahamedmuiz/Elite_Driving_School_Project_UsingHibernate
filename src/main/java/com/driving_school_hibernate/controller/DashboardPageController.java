@@ -44,25 +44,9 @@ public class DashboardPageController {
     }
 
     private void applyRoleBasedAccess() {
+        // Only admin should see the Users button
         if (!AuthUtil.isAdmin()) {
-            // Disable admin-only features for regular users
             btnUsers.setDisable(true);
-            btnUsers.setVisible(false); // Or just disable: btnUsers.setDisable(true);
-
-            // You can also disable other admin-only features if needed
-            // btnStudents.setDisable(true);
-            // btnInstructors.setDisable(true);
-        }
-
-        // Example: Only admin can manage users and view all payments
-        if (AuthUtil.isUser()) {
-            // Regular users might have limited access
-            btnUsers.setDisable(true);
-            btnUsers.setVisible(false);
-
-            // Optionally disable other features for users
-            // btnPayments.setDisable(true);
-            // btnInstructors.setDisable(true);
         }
     }
 

@@ -4,6 +4,7 @@ import com.driving_school_hibernate.bo.BOFactory;
 import com.driving_school_hibernate.bo.BOTypes;
 import com.driving_school_hibernate.bo.custom.CourseBO;
 import com.driving_school_hibernate.dto.CourseDTO;
+import com.driving_school_hibernate.util.AuthUtil;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -22,6 +23,13 @@ public class CoursePageController {
     @FXML private TextField txtFee;
     @FXML private TextField txtSearch;
 
+    @FXML private Button btnAdd;
+    @FXML private Button btnUpdate;
+    @FXML private Button btnDelete;
+    @FXML private Button btnClear;
+    @FXML private Button btnSearch;
+    @FXML private Button btnViewAll;
+
     @FXML private TableView<CourseDTO> tblCourses;
     @FXML private TableColumn<CourseDTO, String> colCourseId;
     @FXML private TableColumn<CourseDTO, String> colCourseName;
@@ -36,6 +44,9 @@ public class CoursePageController {
         // CourseId field disabled
         txtCourseId.setEditable(false);
         txtCourseId.setDisable(true);
+
+        applyRoleBasedAccess();
+
 
         colCourseId.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCourseId()));
         colCourseName.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getName()));
@@ -56,6 +67,15 @@ public class CoursePageController {
                 txtFee.setText(String.valueOf(selected.getFee()));
             }
         });
+    }
+
+    private void applyRoleBasedAccess() {
+        // Customize based on what each role can do in this page
+        if (!AuthUtil.isAdmin()) {
+            btnAdd.setDisable(true);
+            btnUpdate.setDisable(true);
+            btnDelete.setDisable(true);
+        }
     }
 
     @FXML

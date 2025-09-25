@@ -8,6 +8,7 @@ import com.driving_school_hibernate.bo.custom.CourseBO;
 import com.driving_school_hibernate.dto.PaymentDTO;
 import com.driving_school_hibernate.dto.StudentDTO;
 import com.driving_school_hibernate.dto.CourseDTO;
+import com.driving_school_hibernate.util.AuthUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -69,6 +70,7 @@ public class PaymentPageController implements Initializable {
         loadAllPayments();
         generateNextPaymentId();
         setCurrentDate();
+        applyRoleBasedAccess();
     }
 
     private void initializeUI() {
@@ -105,6 +107,12 @@ public class PaymentPageController implements Initializable {
                     }
                 }
         );
+    }
+
+    private void applyRoleBasedAccess() {
+        if (!AuthUtil.isAdmin()) {
+            btnDelete.setDisable(true);
+        }
     }
 
     private void loadStudents() {

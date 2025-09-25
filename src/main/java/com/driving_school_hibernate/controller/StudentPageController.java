@@ -4,6 +4,7 @@ import com.driving_school_hibernate.config.FactoryConfiguration;
 import com.driving_school_hibernate.dto.StudentDTO;
 import com.driving_school_hibernate.entity.StudentEntity;
 import com.driving_school_hibernate.bo.util.EntityDTOConvertor;
+import com.driving_school_hibernate.util.AuthUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -37,6 +38,8 @@ public class StudentPageController {
     @FXML private TableColumn<StudentDTO, String> colEmail;
     @FXML private TableColumn<StudentDTO, String> colAddress;
 
+    @FXML private Button btnDelete;
+
     // ===================== Data =====================
     private final ObservableList<StudentDTO> studentList = FXCollections.observableArrayList();
 
@@ -50,6 +53,8 @@ public class StudentPageController {
     public void initialize() {
         txtStudentId.setEditable(false);
         txtStudentId.setDisable(true);
+
+        applyRoleBasedAccess();
 
         colId.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getStudentId()));
         colFirstName.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getFirstName()));
@@ -65,6 +70,12 @@ public class StudentPageController {
         generateNewStudentId();
 
         tblStudents.setOnMouseClicked(this::handleRowSelect);
+    }
+
+    private void applyRoleBasedAccess() {
+        if (!AuthUtil.isAdmin()) {
+            btnDelete.setDisable(true);
+        }
     }
 
     // ===================== Add Student =====================
