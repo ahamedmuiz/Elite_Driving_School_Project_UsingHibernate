@@ -15,5 +15,5 @@ public class InstructorDTO {
     private String phone;
     private String email;
     private String specialization;
-    private String availability; // "Available" | "Not Available"
+    private String availability;
 }

@@ -31,19 +31,17 @@ public class PaymentBOImpl implements PaymentBO {
         try (Session session = FactoryConfiguration.getInstance().getSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                // Check if student exists
+
                 Optional<StudentEntity> student = studentDAO.findById(paymentDTO.getStudentId());
                 if (student.isEmpty()) {
                     throw new SQLException("Student not found with ID: " + paymentDTO.getStudentId());
                 }
 
-                // Check if course exists
                 Optional<CourseEntity> course = courseDAO.findById(paymentDTO.getCourseId());
                 if (course.isEmpty()) {
                     throw new SQLException("Course not found with ID: " + paymentDTO.getCourseId());
                 }
 
-                // Check for duplicate payment
                 if (paymentDAO.existsByStudentAndCourse(paymentDTO.getStudentId(), paymentDTO.getCourseId())) {
                     throw new SQLException("Payment already exists for this student and course");
                 }
@@ -69,19 +67,16 @@ public class PaymentBOImpl implements PaymentBO {
         try (Session session = FactoryConfiguration.getInstance().getSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                // Check if payment exists
                 Optional<PaymentEntity> existingPayment = paymentDAO.findById(paymentDTO.getPaymentId());
                 if (existingPayment.isEmpty()) {
                     throw new SQLException("Payment not found with ID: " + paymentDTO.getPaymentId());
                 }
 
-                // Check if student exists
                 Optional<StudentEntity> student = studentDAO.findById(paymentDTO.getStudentId());
                 if (student.isEmpty()) {
                     throw new SQLException("Student not found with ID: " + paymentDTO.getStudentId());
                 }
 
-                // Check if course exists
                 Optional<CourseEntity> course = courseDAO.findById(paymentDTO.getCourseId());
                 if (course.isEmpty()) {
                     throw new SQLException("Course not found with ID: " + paymentDTO.getCourseId());
@@ -136,13 +131,13 @@ public class PaymentBOImpl implements PaymentBO {
         if (lastId.isPresent()) {
             String lastPaymentId = lastId.get();
             try {
-                int number = Integer.parseInt(lastPaymentId.substring(1)); // Remove "P" prefix
+                int number = Integer.parseInt(lastPaymentId.substring(1));
                 return String.format("P%03d", number + 1);
             } catch (NumberFormatException e) {
                 throw new SQLException("Invalid payment ID format: " + lastPaymentId);
             }
         }
-        return "P001"; // First payment ID
+        return "P001";
     }
 
     @Override

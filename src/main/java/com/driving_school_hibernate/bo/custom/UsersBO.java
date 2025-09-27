@@ -7,13 +7,21 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface UsersBO extends SuperBO {
+
     boolean saveUser(UsersDTO dto) throws SQLException;
+
     boolean updateUser(UsersDTO dto) throws SQLException;
+
     boolean deleteUser(String id) throws SQLException;
+
     UsersDTO findUserById(String id) throws SQLException;
+
     List<UsersDTO> findAllUsers() throws SQLException;
+
     String generateNewUserId() throws SQLException;
+
     List<UsersDTO> searchUsersByName(String name) throws SQLException;
+
     boolean updateUserProfile(UsersDTO dto) throws SQLException;
 
 }

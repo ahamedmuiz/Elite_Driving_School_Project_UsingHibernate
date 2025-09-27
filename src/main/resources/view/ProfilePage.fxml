@@ -74,13 +74,4 @@
         </ScrollPane>
     </center>
 
-    <!-- Bottom Footer -->
-    <bottom>
-        <HBox alignment="CENTER_RIGHT"
-              style="-fx-background-color: #BDC3C7; -fx-padding: 10;">
-            <Label text="Profile Settings | Elite Driving School Management"
-                   style="-fx-text-fill: #2C3E50; -fx-font-size: 12px;" />
-        </HBox>
-    </bottom>
-
 </BorderPane>

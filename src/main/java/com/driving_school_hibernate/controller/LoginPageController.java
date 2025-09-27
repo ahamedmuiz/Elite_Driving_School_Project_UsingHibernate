@@ -27,17 +27,17 @@ public class LoginPageController {
 
     @FXML
     public void initialize() {
-        // Password visibility toggle
+
         chkShowPassword.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                // Show password in visible text field
+
                 txtVisiblePassword.setText(txtPassword.getText());
                 txtVisiblePassword.setVisible(true);
                 txtVisiblePassword.setManaged(true);
                 txtPassword.setVisible(false);
                 txtPassword.setManaged(false);
             } else {
-                // Hide password, move text back to password field
+
                 txtPassword.setText(txtVisiblePassword.getText());
                 txtPassword.setVisible(true);
                 txtPassword.setManaged(true);
@@ -46,17 +46,13 @@ public class LoginPageController {
             }
         });
 
-        // Initially hide the visible password field
         txtVisiblePassword.setVisible(false);
         txtVisiblePassword.setManaged(false);
 
-        // Clear button action
         btnClear.setOnAction(event -> clearForm());
 
-        // Login button action
         btnLogin.setOnAction(event -> handleLogin());
 
-        // Enter key support for login
         txtPassword.setOnAction(event -> handleLogin());
         txtVisiblePassword.setOnAction(event -> handleLogin());
         txtUsername.setOnAction(event -> handleLogin());
@@ -92,7 +88,6 @@ public class LoginPageController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            // Fallback: Show success message and close login
             showSuccessAndClose();
         }
     }
@@ -114,8 +109,4 @@ public class LoginPageController {
         chkShowPassword.setSelected(false);
     }
 
-    private void showError(String message) {
-        lblError.setText(message);
-        lblError.setVisible(true);
-    }
 }

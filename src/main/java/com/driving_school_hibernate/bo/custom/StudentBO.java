@@ -23,4 +23,5 @@ public interface StudentBO extends SuperBO {
     Optional<String> getLastStudentId() throws SQLException;
 
     List<StudentDTO> searchStudentsByName(String name) throws SQLException;
+
 }

@@ -12,5 +12,5 @@ public class UsersDTO {
     private String username;
     private String email;
     private String password;
-    private String role;  // "Admin" or "User"
+    private String role;
 }

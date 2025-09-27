@@ -25,5 +25,5 @@ public class UsersEntity {
     private String password;
 
     @Column(name = "role", nullable = false, length = 20)
-    private String role; // Admin | User
+    private String role;
 }

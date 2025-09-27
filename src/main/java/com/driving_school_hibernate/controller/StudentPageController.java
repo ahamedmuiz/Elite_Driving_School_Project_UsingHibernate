@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 
 public class StudentPageController {
 
-    // ===================== Form Fields =====================
     @FXML private TextField txtStudentId;
     @FXML private TextField txtFirstName;
     @FXML private TextField txtLastName;
@@ -28,7 +27,6 @@ public class StudentPageController {
     @FXML private TextArea txtAddress;
     @FXML private TextField txtSearch;
 
-    // ===================== Table =====================
     @FXML private TableView<StudentDTO> tblStudents;
     @FXML private TableColumn<StudentDTO, String> colId;
     @FXML private TableColumn<StudentDTO, String> colFirstName;
@@ -40,15 +38,13 @@ public class StudentPageController {
 
     @FXML private Button btnDelete;
 
-    // ===================== Data =====================
     private final ObservableList<StudentDTO> studentList = FXCollections.observableArrayList();
 
-    // ===================== Regex Patterns =====================
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z ]{3,50}$");
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^0[0-9]{9}$");
 
-    // ===================== Initialization =====================
+
     @FXML
     public void initialize() {
         txtStudentId.setEditable(false);
@@ -78,7 +74,6 @@ public class StudentPageController {
         }
     }
 
-    // ===================== Add Student =====================
     @FXML
     private void handleAddStudent() {
         if (!validateForm()) return;
@@ -114,7 +109,6 @@ public class StudentPageController {
         generateNewStudentId();
     }
 
-    // ===================== Update Student =====================
     @FXML
     private void handleUpdateStudent() {
         StudentDTO selectedDTO = tblStudents.getSelectionModel().getSelectedItem();
@@ -157,7 +151,6 @@ public class StudentPageController {
         });
     }
 
-    // ===================== Delete Student =====================
     @FXML
     private void handleDeleteStudent() {
         StudentDTO selectedDTO = tblStudents.getSelectionModel().getSelectedItem();
@@ -186,7 +179,6 @@ public class StudentPageController {
         });
     }
 
-    // ===================== Search & View All =====================
     @FXML
     private void handleSearchStudent() {
         String keyword = txtSearch.getText().trim().toLowerCase();
@@ -215,7 +207,6 @@ public class StudentPageController {
         tblStudents.setItems(studentList);
     }
 
-    // ===================== Row Select =====================
     private void handleRowSelect(MouseEvent event) {
         StudentDTO selected = tblStudents.getSelectionModel().getSelectedItem();
         if (selected != null) {
@@ -229,7 +220,6 @@ public class StudentPageController {
         }
     }
 
-    // ===================== Helpers =====================
     @FXML
     private void handleClearForm() {
         clearForm();

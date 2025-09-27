@@ -74,7 +74,7 @@ public class PaymentPageController implements Initializable {
     }
 
     private void initializeUI() {
-        // Setup table columns
+
         colPaymentId.setCellValueFactory(new PropertyValueFactory<>("paymentId"));
         colStudent.setCellValueFactory(new PropertyValueFactory<>("studentId"));
         colCourse.setCellValueFactory(new PropertyValueFactory<>("courseId"));
@@ -83,23 +83,20 @@ public class PaymentPageController implements Initializable {
         colMethod.setCellValueFactory(new PropertyValueFactory<>("method"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        // Setup choice boxes
+
         choiceMethod.setItems(FXCollections.observableArrayList("Cash", "Card"));
         choiceStatus.setItems(FXCollections.observableArrayList("Advance Payment", "Full Payment"));
 
-        // Set default values
+
         choiceMethod.setValue("Cash");
         choiceStatus.setValue("Advance Payment");
 
 
-        // Make payment ID non-editable and disabled
         txtPaymentId.setEditable(false);
         txtPaymentId.setDisable(true);
 
-        // Set current date
         datePayment.setValue(LocalDate.now());
 
-        // Add table selection listener
         tblPayments.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (newValue != null) {
@@ -171,7 +168,6 @@ public class PaymentPageController implements Initializable {
 
             PaymentDTO paymentDTO = getPaymentDataFromForm();
 
-            // Check for duplicate payment
             if (paymentBO.isDuplicatePayment(paymentDTO.getStudentId(), paymentDTO.getCourseId())) {
                 showAlert(Alert.AlertType.WARNING, "This student has already paid for the selected course.");
                 return;
@@ -294,7 +290,6 @@ public class PaymentPageController implements Initializable {
     private void setPaymentData(PaymentDTO payment) {
         txtPaymentId.setText(payment.getPaymentId());
 
-        // Set student combo box
         for (String studentItem : studentList) {
             if (studentItem.startsWith(payment.getStudentId())) {
                 cmbStudent.setValue(studentItem);
@@ -302,7 +297,6 @@ public class PaymentPageController implements Initializable {
             }
         }
 
-        // Set course combo box
         for (String courseItem : courseList) {
             if (courseItem.startsWith(payment.getCourseId())) {
                 cmbCourse.setValue(courseItem);

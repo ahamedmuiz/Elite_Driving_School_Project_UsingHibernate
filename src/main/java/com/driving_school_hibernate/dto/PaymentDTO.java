@@ -14,6 +14,6 @@ public class PaymentDTO {
     private String courseId;
     private double amount;
     private LocalDate paymentDate;
-    private String method;  // Cash | Card
-    private String status;  // Pending | Completed
+    private String method;
+    private String status;
 }

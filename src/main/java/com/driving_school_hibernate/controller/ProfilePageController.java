@@ -40,13 +40,11 @@ public class ProfilePageController implements Initializable {
         try {
             String currentUserId = AuthUtil.getCurrentUserId();
 
-            // For default admin (not in database)
             if ("ADMIN001".equals(currentUserId)) {
                 loadDefaultAdminProfile();
                 return;
             }
 
-            // For database users
             currentUser = usersBO.findUserById(currentUserId);
             if (currentUser != null) {
                 populateForm(currentUser);
@@ -63,13 +61,12 @@ public class ProfilePageController implements Initializable {
         currentUser = new UsersDTO();
         currentUser.setUserId("ADMIN001");
         currentUser.setUsername(AuthUtil.getCurrentUser());
-        currentUser.setEmail("admin@elitedriving.com");
-        currentUser.setPassword(""); // Password not stored for security
+        currentUser.setEmail("defaultAdmin@gmail.com");
+        currentUser.setPassword("");
         currentUser.setRole("Admin");
 
         populateForm(currentUser);
 
-        // Default admin can only change password, not username
         txtUsername.setEditable(false);
         txtUsername.setStyle("-fx-background-color: #f0f0f0;");
     }
@@ -80,16 +77,14 @@ public class ProfilePageController implements Initializable {
         txtEmail.setText(user.getEmail());
         txtRole.setText(user.getRole());
 
-        // Clear password fields for security
         txtPassword.clear();
         txtConfirmPassword.clear();
 
-        // Apply field restrictions based on user type
         applyFieldRestrictions();
     }
 
     private void setupFieldRestrictions() {
-        // Make non-editable fields visually distinct
+
         txtUserId.setEditable(false);
         txtEmail.setEditable(false);
         txtRole.setEditable(false);
@@ -100,12 +95,11 @@ public class ProfilePageController implements Initializable {
     }
 
     private void applyFieldRestrictions() {
-        // Regular users can only change their password, not username
+
         if (!AuthUtil.isAdmin() || "ADMIN001".equals(currentUser.getUserId())) {
             txtUsername.setEditable(false);
             txtUsername.setStyle("-fx-background-color: #f0f0f0;");
         } else {
-            // Admin users (except default admin) can change their username
             txtUsername.setEditable(true);
             txtUsername.setStyle("-fx-background-color: white;");
         }
@@ -123,17 +117,14 @@ public class ProfilePageController implements Initializable {
                 return;
             }
 
-            // Check if anything actually changed
             boolean changesMade = checkForChanges();
             if (!changesMade) {
                 showInfo("No changes detected.");
                 return;
             }
 
-            // Update user object with new values
             updateUserFromForm();
 
-            // Handle update based on user type
             if ("ADMIN001".equals(currentUser.getUserId())) {
                 updateDefaultAdmin();
             } else {
@@ -147,7 +138,7 @@ public class ProfilePageController implements Initializable {
     }
 
     private boolean validateForm() {
-        // Username validation (only if editable)
+
         if (txtUsername.isEditable()) {
             String username = txtUsername.getText().trim();
             if (username.isEmpty()) {
@@ -162,7 +153,6 @@ public class ProfilePageController implements Initializable {
             }
         }
 
-        // Password validation
         String password = txtPassword.getText();
         String confirmPassword = txtConfirmPassword.getText();
 
@@ -195,7 +185,6 @@ public class ProfilePageController implements Initializable {
             currentUser.setUsername(txtUsername.getText().trim());
         }
 
-        // Only update password if provided
         if (!txtPassword.getText().isEmpty()) {
             currentUser.setPassword(txtPassword.getText());
         }
@@ -205,11 +194,8 @@ public class ProfilePageController implements Initializable {
         boolean success = usersBO.updateUser(currentUser);
         if (success) {
             showInfo("Profile updated successfully!");
-            // Update AuthUtil with new username if changed
             if (txtUsername.isEditable()) {
-                // AuthUtil current user info would be updated on next login
             }
-            // Reload profile to reflect changes
             loadUserProfile();
         } else {
             showError("Failed to update profile in database!");
@@ -217,16 +203,14 @@ public class ProfilePageController implements Initializable {
     }
 
     private void updateDefaultAdmin() {
-        // For default admin, we can't update in database, so show message
+
         showInfo("Default admin profile updated (changes will persist until logout).");
 
-        // Update AuthUtil for current session
         if (!txtPassword.getText().isEmpty()) {
-            // Note: This won't persist after logout for default admin
+
             showInfo("Password changed for current session. Default password will be restored after logout.");
         }
 
-        // Clear password fields for security
         txtPassword.clear();
         txtConfirmPassword.clear();
     }
@@ -237,7 +221,7 @@ public class ProfilePageController implements Initializable {
     }
 
     private void clearForm() {
-        // Clear only editable fields
+
         if (txtUsername.isEditable()) {
             txtUsername.setText(currentUser != null ? currentUser.getUsername() : "");
         }

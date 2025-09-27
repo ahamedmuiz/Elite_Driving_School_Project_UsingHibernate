@@ -23,7 +23,7 @@ public class LessonBOImpl implements LessonBO {
         try (Session session = FactoryConfiguration.getInstance().getSession()) {
             tx = session.beginTransaction();
 
-            // load associations in same session
+
             StudentEntity student = session.get(StudentEntity.class, dto.getStudentId());
             CourseEntity course = session.get(CourseEntity.class, dto.getCourseId());
             InstructorEntity instructor = session.get(InstructorEntity.class, dto.getInstructorId());
@@ -129,7 +129,7 @@ public class LessonBOImpl implements LessonBO {
                 return "L001";
             } else {
                 String last = list.get(0);
-                // Extract digits
+
                 String digits = last.replaceAll("\\D+", "");
                 int num = 0;
                 if (!digits.isEmpty()) {

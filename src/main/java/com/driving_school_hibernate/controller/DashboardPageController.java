@@ -32,19 +32,17 @@ public class DashboardPageController {
 
     @FXML
     public void initialize() {
-        // Display logged-in user info
+
         lblLoggedUser.setText("Welcome, " + AuthUtil.getCurrentUser() +
                 " (" + AuthUtil.getCurrentRole() + ")");
 
-        // Apply role-based access control
         applyRoleBasedAccess();
 
-        // Load default page based on role
         loadDefaultPage();
     }
 
     private void applyRoleBasedAccess() {
-        // Only admin should see the Users button
+
         if (!AuthUtil.isAdmin()) {
             btnUsers.setDisable(true);
         }
@@ -127,15 +125,6 @@ public class DashboardPageController {
         if (feature.equals("User Management") && !AuthUtil.isAdmin()) {
             showAccessDenied("User Management is only available for administrators.");
             return false;
-        }
-
-        // Add more access checks as needed
-        if (feature.equals("Student Management") && AuthUtil.isUser()) {
-            // Example: Only admin and instructors can manage students
-            // if (!AuthUtil.isAdmin() && !AuthUtil.isInstructor()) {
-            //     showAccessDenied("Student management requires admin or instructor privileges.");
-            //     return false;
-            // }
         }
 
         return true;

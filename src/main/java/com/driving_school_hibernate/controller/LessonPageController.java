@@ -43,28 +43,24 @@ public class LessonPageController {
     private final LessonBO lessonBO = BOFactory.getInstance().getBO(BOTypes.LESSON);
     private final ObservableList<LessonDTO> lessonList = FXCollections.observableArrayList();
 
-    // combo lists
     private final ObservableList<StudentDTO> studentItems = FXCollections.observableArrayList();
     private final ObservableList<CourseDTO> courseItems = FXCollections.observableArrayList();
     private final ObservableList<InstructorDTO> instructorItems = FXCollections.observableArrayList();
 
-    // name maps for table display
     private final Map<String, String> studentNameMap = new HashMap<>();
     private final Map<String, String> courseNameMap = new HashMap<>();
     private final Map<String, String> instructorNameMap = new HashMap<>();
 
-    // currently selected lesson (table)
     private LessonDTO selectedLesson = null;
 
     @FXML
     public void initialize() {
-        // disable LessonId editing & clicking
+
         txtLessonId.setEditable(false);
         txtLessonId.setDisable(true);
 
         applyRoleBasedAccess();
 
-        // setup table columns (show ids by default + readable names via maps)
         colLessonId.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getLessonId()));
         colStudent.setCellValueFactory(c ->
                 new SimpleStringProperty(studentNameMap.getOrDefault(c.getValue().getStudentId(), c.getValue().getStudentId())));
@@ -79,14 +75,11 @@ public class LessonPageController {
 
         tblLessons.setItems(lessonList);
 
-        // status choicebox defaults
         choiceStatus.setItems(FXCollections.observableArrayList("Scheduled", "Completed", "Cancelled"));
 
-        // load combobox data and lessons
         loadCombosAndMaps();
         loadLessons();
 
-        // when selecting a lesson row, populate form
         tblLessons.setOnMouseClicked(e -> {
             LessonDTO dto = tblLessons.getSelectionModel().getSelectedItem();
             if (dto != null) {
@@ -95,7 +88,6 @@ public class LessonPageController {
             }
         });
 
-        // set nice display converters for combo boxes (show human readable)
         cmbStudent.setConverter(new StringConverter<>() {
             @Override
             public String toString(StudentDTO s) {
@@ -129,7 +121,7 @@ public class LessonPageController {
     }
     private void loadCombosAndMaps() {
         try (Session session = FactoryConfiguration.getInstance().getSession()) {
-            // students
+
             List<StudentEntity> students = session.createQuery("FROM StudentEntity", StudentEntity.class).list();
             studentItems.clear();
             studentNameMap.clear();
@@ -140,7 +132,7 @@ public class LessonPageController {
             }
             cmbStudent.setItems(studentItems);
 
-            // courses
+
             List<CourseEntity> courses = session.createQuery("FROM CourseEntity", CourseEntity.class).list();
             courseItems.clear();
             courseNameMap.clear();
@@ -151,7 +143,7 @@ public class LessonPageController {
             }
             cmbCourse.setItems(courseItems);
 
-            // instructors
+
             List<InstructorEntity> instructors = session.createQuery("FROM InstructorEntity", InstructorEntity.class).list();
             instructorItems.clear();
             instructorNameMap.clear();
@@ -188,7 +180,6 @@ public class LessonPageController {
         dateLesson.setValue(dto.getDate() == null ? null : dto.getDate());
         choiceStatus.setValue(dto.getStatus());
 
-        // select student, course, instructor in combo boxes by id
         Optional<StudentDTO> sopt = studentItems.stream()
                 .filter(s -> s.getStudentId().equals(dto.getStudentId())).findFirst();
         sopt.ifPresent(cmbStudent::setValue);
@@ -208,7 +199,6 @@ public class LessonPageController {
             showError("All fields must be filled.");
             return false;
         }
-        // time format simple check (HH:mm or 10:00 AM) - keep lightweight
         if (txtTime.getText().trim().length() < 3) {
             showError("Enter a valid time.");
             return false;
@@ -232,7 +222,6 @@ public class LessonPageController {
         try {
             if (!validateForm()) return;
 
-            // Prevent adding while a row is selected that matches the current id
             if (selectedLesson != null && selectedLesson.getLessonId().equals(txtLessonId.getText())) {
                 showError("Cannot add while a table row is selected. Clear selection first or press Clear.");
                 return;
@@ -261,7 +250,6 @@ public class LessonPageController {
 
             LessonDTO dto = getFormDTO();
 
-            // check whether anything changed (compare fields)
             boolean changed = !Objects.equals(dto.getStudentId(), selectedLesson.getStudentId())
                     || !Objects.equals(dto.getCourseId(), selectedLesson.getCourseId())
                     || !Objects.equals(dto.getInstructorId(), selectedLesson.getInstructorId())

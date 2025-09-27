@@ -26,9 +26,7 @@ public class CoursePageController {
     @FXML private Button btnAdd;
     @FXML private Button btnUpdate;
     @FXML private Button btnDelete;
-    @FXML private Button btnClear;
-    @FXML private Button btnSearch;
-    @FXML private Button btnViewAll;
+
 
     @FXML private TableView<CourseDTO> tblCourses;
     @FXML private TableColumn<CourseDTO, String> colCourseId;
@@ -41,7 +39,7 @@ public class CoursePageController {
 
     @FXML
     public void initialize() {
-        // CourseId field disabled
+
         txtCourseId.setEditable(false);
         txtCourseId.setDisable(true);
 
@@ -70,7 +68,7 @@ public class CoursePageController {
     }
 
     private void applyRoleBasedAccess() {
-        // Customize based on what each role can do in this page
+
         if (!AuthUtil.isAdmin()) {
             btnAdd.setDisable(true);
             btnUpdate.setDisable(true);
@@ -182,7 +180,6 @@ public class CoursePageController {
         generateCourseId();
     }
 
-    // Helpers
     private void loadCourses() {
         try {
             courseList.setAll(courseBO.findAllCourses());

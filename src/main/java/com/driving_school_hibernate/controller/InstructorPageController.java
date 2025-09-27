@@ -28,10 +28,8 @@ public class InstructorPageController {
     private final InstructorBO instructorBO = BOFactory.getInstance().getBO(BOTypes.INSTRUCTOR);
     private final ObservableList<InstructorDTO> instructorList = FXCollections.observableArrayList();
 
-    // Currently selected instructor (from table)
     private InstructorDTO selectedInstructor = null;
 
-    // Regex
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z ]{3,50}$");
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^0[0-9]{9}$");
@@ -146,7 +144,6 @@ public class InstructorPageController {
         try {
             if (!validateFields()) return;
 
-            // Prevent adding when a row is selected
             if (selectedInstructor != null && selectedInstructor.getInstructorId().equals(txtInstructorId.getText())) {
                 showError("Cannot add: A table row is selected. Use Update instead.");
                 return;
@@ -175,7 +172,6 @@ public class InstructorPageController {
 
             InstructorDTO dto = getFormDTO();
 
-            // 🔎 Check if any field actually changed
             boolean changed =
                     !dto.getFirstName().equals(selectedInstructor.getFirstName()) ||
                             !dto.getLastName().equals(selectedInstructor.getLastName()) ||
@@ -255,7 +251,7 @@ public class InstructorPageController {
         txtSearch.clear();
         choiceAvailability.setValue(null);
 
-        selectedInstructor = null; // Reset selection
+        selectedInstructor = null;
 
         try {
             setNewInstructorId();

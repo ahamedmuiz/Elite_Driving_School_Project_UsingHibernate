@@ -35,5 +35,5 @@ public class InstructorEntity {
     private String specialization;
 
     @Column(name = "availability", length = 20)
-    private String availability; // "Available" / "Not Available"
+    private String availability;
 }

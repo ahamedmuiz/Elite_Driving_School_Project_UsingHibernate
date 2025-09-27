@@ -61,7 +61,6 @@ public class UsersBOImpl implements UsersBO {
 
     @Override
     public boolean updateUserProfile(UsersDTO dto) throws SQLException {
-        // Special method for profile updates that might have different validation
         return updateUser(dto);
     }
 }

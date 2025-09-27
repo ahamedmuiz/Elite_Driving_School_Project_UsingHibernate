@@ -54,7 +54,7 @@ public class CourseBOImpl implements CourseBO {
     public String generateNewCourseId() throws SQLException {
         Optional<String> lastIdOpt = courseDAO.findLastId();
         if (lastIdOpt.isPresent()) {
-            String lastId = lastIdOpt.get(); // e.g. "C5"
+            String lastId = lastIdOpt.get();
             int num = Integer.parseInt(lastId.substring(1));
             return "C00" + (num + 1);
         } else {

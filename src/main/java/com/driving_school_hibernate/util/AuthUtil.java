@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class AuthUtil {
 
-    // Default admin credentials
+    //this default admin
     private static final String DEFAULT_ADMIN_USERNAME = "admin";
     private static final String DEFAULT_ADMIN_PASSWORD = "admin1234";
     private static final Roles DEFAULT_ADMIN_ROLE = Roles.ADMIN;
@@ -20,7 +20,7 @@ public class AuthUtil {
     private static UsersDTO currentUserDTO;
 
     public static boolean authenticate(String username, String password) {
-        // First check if it's the default admin
+
         if (DEFAULT_ADMIN_USERNAME.equals(username) && DEFAULT_ADMIN_PASSWORD.equals(password)) {
             currentUser = username;
             currentRole = DEFAULT_ADMIN_ROLE;
@@ -29,7 +29,6 @@ public class AuthUtil {
             return true;
         }
 
-        // Then check against database users
         try {
             UsersDTO user = findUserByUsername(username);
 
@@ -72,7 +71,6 @@ public class AuthUtil {
         }
     }
 
-    // Getters
     public static String getCurrentUser() {
         return currentUser;
     }
@@ -108,7 +106,6 @@ public class AuthUtil {
         return currentUser != null;
     }
 
-    // Update current user info (for profile updates)
     public static void updateCurrentUserInfo(String newUsername) {
         if (newUsername != null && !newUsername.isEmpty()) {
             currentUser = newUsername;
